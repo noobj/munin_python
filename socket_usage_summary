@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
+
+import subprocess
+import re
+import sys
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == 'config':
+        print "graph_title TCP socket usage summary"
+        print "graph_vlabel number"
+        print "graph_category network"
+        print "graph_info This graph shows the context of ss -s"
+        print "TCP.label TCP"
+        print "estab.label estab"
+        print "closed.label closed"
+        print "orphaned.label orphaned"
+        print "synrecv.label synrecv"
+        print "timewait1.label timewait1"
+        print "timewait2.label timewait2"
+        print "ports.label ports"
+        sys.exit(0)
+
+proc =  subprocess.Popen(["ss -s"], stdout=subprocess.PIPE, shell=True)
+proc.stdout.readline()
+# 取得ss -s 結果中TCP那行
+context = proc.stdout.readline()
+
+pattern = re.compile(r'\d+')
+item = re.findall(pattern, context)
+
+print "TCP.value {0}".format(item[0])
+print "estab.value {0}".format(item[1])
+print "closed.value {0}".format(item[2])
+print "orphaned.value {0}".format(item[3])
+print "synrecv.value {0}".format(item[4])
+print "timewait1.value {0}".format(item[5])
+print "timewait2.value {0}".format(item[6])
+print "ports.value {0}".format(item[7])
+
+
